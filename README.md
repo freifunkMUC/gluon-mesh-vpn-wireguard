@@ -1,9 +1,10 @@
-gluon-mesh-vpn-wireguard
+# gluon-mesh-vpn-wireguard
 
-You can use this package for connecting with wireguard to the freifunk hood BonnV2.
+You can use this package for connecting with wireguard to the freifunk Königswinter network.
 
 You should use something like the following in the site.conf:
 
+...
  mesh_vpn = {
         mtu = 1420,
         wireguard = {
@@ -28,6 +29,7 @@ You should use something like the following in the site.conf:
 
                         },
         },
-        
+...        
 
-The gretatpip is the one of the server(s)! And you should include the package in the site.mk of course!
+**The `gretatpip` is the one of the server(s)! 
+And you should include the package in the site.mk of course!
