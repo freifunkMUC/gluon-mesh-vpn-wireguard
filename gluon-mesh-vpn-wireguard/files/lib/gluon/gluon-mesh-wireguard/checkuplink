@@ -1,6 +1,15 @@
 #!/bin/sh
 
-if [ "$(uci get wireguard.wireguard.enabled)" == "true" ]; then
+#Wurde bereits ein privatekey generiert?
+temp=$(uci get wireguard.wireguard.privatekey);
+#Falls nicht, wird das hier nachgeholt
+if [ "$?" -ne "0" ]; then
+        uci set wireguard.wireguard.privatekey=$(wg genkey);
+        uci commit wireguard
+fi
+
+#Ist wireguard überhaupt aktiviert??
+if [ "$(uci get wireguard.wireguard.enabled)" == "true" ] || [ "$(uci get wireguard.wireguard.enabled)" == "1" ]; then
 
         #Ab hier kommen die Tests, ob die Verbindung steht
         CONNECTED=1
