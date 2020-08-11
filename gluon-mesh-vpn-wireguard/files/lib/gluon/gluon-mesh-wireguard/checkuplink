@@ -62,7 +62,7 @@ if [ "$(uci get wireguard.wireguard.enabled)" == "true" ] || [ "$(uci get wiregu
 		modprobe wireguard                                                       
 
                 NUMBER_OF_PEERS=$(uci show wireguard | egrep -e peer_[0-9].endpoint | wc -l)
-                PEER=awk 'BEGIN{srand();print int(rand()*($NUMBER_OF_PEERS)+1) }'
+                PEER=$(awk 'BEGIN{srand();print int(rand()*($NUMBER_OF_PEERS)+1) }')
                                                                                                  
 		#Die alten peers loeschen
 		wg set $INTERFACE peer  $(wg |  awk 'BEGIN {RS=""} /endpoint/ {print $2}') remove
@@ -78,7 +78,7 @@ if [ "$(uci get wireguard.wireguard.enabled)" == "true" ] || [ "$(uci get wiregu
                 wg set $INTERFACE private-key /tmp/wgpriv
                 sleep 5
 
-                wg set $INTERFACE peer $(uci get wireguard.peer_$PEER.publickey) persistent-keepalive 25 allowed-ips fe80::/10,$(uci get wireguard.wireguard.mcastgroup)/32 endpoint $(uci get wireguard.peer_$PEER.endpoint)
+                wg set $INTERFACE peer $(uci get wireguard.peer_$PEER.publickey) persistent-keepalive 25 allowed-ips fe80::/10,$(uci get wireguard.wireguard.mcastgroup)/128 endpoint $(uci get wireguard.peer_$PEER.endpoint)
                 ip link set up dev $INTERFACE
                 ip address add "$(interface_linklocal "$INTERFACE")"/64 dev $INTERFACE
 
