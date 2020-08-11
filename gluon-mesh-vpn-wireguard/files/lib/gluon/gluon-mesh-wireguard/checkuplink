@@ -1,7 +1,7 @@
 #!/bin/sh
 
 interface_linklocal() {
-        local macaddr="echo $(date;head -n2 /dev/urandom) |md5sum|sed 's/^\(..\)\(..\)\(..\)\(..\)\(..\).*$/02:\1:\2:\3:\4:\5/'"
+        local macaddr="$(echo $(date;head -n2 /dev/urandom) |md5sum|sed 's/^\(..\)\(..\)\(..\)\(..\)\(..\).*$/02:\1:\2:\3:\4:\5/')"
         local oldIFS="$IFS"; IFS=':'; set -- $macaddr; IFS="$oldIFS"
 
         echo "fe80::$(xor2 "$1")$2:$3ff:fe$4:$5$6"
