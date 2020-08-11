@@ -1,17 +1,16 @@
 # gluon-mesh-vpn-wireguard
 
-You can use this package for connecting with wireguard to the freifunk Königswinter network.
+You can use this package for connecting with wireguard to the Freifunk Munich network.
 
 You should use something like the following in the site.conf:
 
         
 ```
  mesh_vpn = {
-        mtu = 1420,
+        mtu = 1410,
         wireguard = {
                 enabled = 'true',
                 iface = 'mesh-vpn',
-                iprange = '10.3', --must be a /16!!
                 limit = '1', -- actually unused
                 mcastgroup = '239.1.1.1',
                 peers = {
