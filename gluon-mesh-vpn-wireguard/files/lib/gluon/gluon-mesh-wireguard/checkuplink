@@ -114,8 +114,8 @@ if [ "$(uci get wireguard.wireguard.enabled)" == "true" ] || [ "$(uci get wiregu
                 ip link set up dev vxlan-wan
                 sleep 5
                 batctl if add vxlan-wan
-                iptables -A INPUT -i $INTERFACE -j ACCEPT
-                iptables -A FORWARD -i $INTERFACE -j ACCEPT
+                ip6tables -A INPUT -i $INTERFACE -j ACCEPT
+                ip6tables -A FORWARD -i $INTERFACE -j ACCEPT
 
         fi
 fi
