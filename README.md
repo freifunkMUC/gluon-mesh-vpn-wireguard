@@ -12,7 +12,7 @@ You should use something like the following in the site.conf:
                 enabled = 'true',
                 iface = 'mesh-vpn',
                 limit = '1', -- actually unused
-                mcastgroup = '239.1.1.1',
+                mcastgroup = 'ff02::15c',
                 peers = {
                                 {
                                         publickey ='N9uF5Gg1B5AqWrE9IuvDgzmQePhqhb8Em/HrRpAdnlY=',

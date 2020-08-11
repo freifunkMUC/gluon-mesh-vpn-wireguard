@@ -1,5 +1,12 @@
 #!/bin/sh
 
+interface_linklocal() {
+        local macaddr="$(ubus call network.device status '{"name": "'"$1"'"}' | jsonfilter -e '@.macaddr')"
+        local oldIFS="$IFS"; IFS=':'; set -- $macaddr; IFS="$oldIFS"
+
+        echo "fe80::$(xor2 "$1")$2:$3ff:fe$4:$5$6"
+}
+
 #Wurde bereits ein privatekey generiert?
 temp=$(uci get wireguard.wireguard.privatekey);
 #Falls nicht, wird das hier nachgeholt
@@ -93,13 +100,14 @@ if [ "$(uci get wireguard.wireguard.enabled)" == "true" ] || [ "$(uci get wiregu
                 echo $(uci get wireguard.wireguard.privatekey) > /tmp/wgpriv
 
                 # Public Key zum vorher ausgesuchten Server hochladen
-                IP=$(curl -s -k --data-urlencode "pubkey=$PUBLICKEY" https://$URL/wireguard.php)
+                curl -s -k --data-urlencode "pubkey=$PUBLICKEY" https://$URL/wireguard.php
 		ip link add dev $INTERFACE type wireguard
                 wg set $INTERFACE private-key /tmp/wgpriv
                 sleep 5
 
                 wg set $INTERFACE peer $(uci get wireguard.peer_$AUSWAHL.publickey) persistent-keepalive 25 allowed-ips $(uci get wireguard.wireguard.mcastgroup)/32 endpoint $(uci get wireguard.peer_$AUSWAHL.endpoint)
                 ip link set up dev $INTERFACE
+                ip address add "$(interface_linklocal "$INTERFACE")" dev $INTERFACE
 
                 sleep 5
                 ip link add vxlan-wan type vxlan id "$(lua -e 'print(tonumber(require("gluon.util").domain_seed_bytes("gluon-mesh-vxlan", 3), 16))')" group $(uci get wireguard.wireguard.mcastgroup) dstport 4789 dev $INTERFACE
