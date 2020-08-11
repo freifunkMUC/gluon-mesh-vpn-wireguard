@@ -63,7 +63,6 @@ if [ "$(uci get wireguard.wireguard.enabled)" == "true" ] || [ "$(uci get wiregu
 
                 NUMBER_OF_PEERS=$(uci show wireguard | egrep -e peer_[0-9].endpoint | wc -l)
                 PEER=awk 'BEGIN{srand();print int(rand()*($NUMBER_OF_PEERS)+1) }'
-        	URL=$(uci get wireguard.peer_$PEER.endpoint | cut -d':' -f1)                          
                                                                                                  
 		#Die alten peers loeschen
 		wg set $INTERFACE peer  $(wg |  awk 'BEGIN {RS=""} /endpoint/ {print $2}') remove
