@@ -30,7 +30,7 @@ do
         uci set wireguard.peer_$(expr $i + 1)=peer
         uci set wireguard.peer_$(expr $i + 1).endpoint=$(jsonfilter -i $datei  -e "$.mesh_vpn.wireguard.peers[$i].endpoint")
         uci set wireguard.peer_$(expr $i + 1).publickey=$(jsonfilter -i $datei  -e "$.mesh_vpn.wireguard.peers[$i].publickey")
-        uci set wireguard.peer_$(expr $i + 1).publickey=$(jsonfilter -i $datei  -e "$.mesh_vpn.wireguard.peers[$i].link_address")
+        uci set wireguard.peer_$(expr $i + 1).link_address=$(jsonfilter -i $datei  -e "$.mesh_vpn.wireguard.peers[$i].link_address")
         i=`expr $i + 1`                                                                                                       
 done                                                                                                                          
                                                                                                                               
