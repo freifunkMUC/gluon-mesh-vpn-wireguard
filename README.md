@@ -1,4 +1,4 @@
-# gluon-mesh-vpn-wireguard
+# gluon-mesh-vpn-wireguard-vxlan
 
 You can use this package for connecting with wireguard to the Freifunk Munich network.
 
@@ -34,6 +34,5 @@ You should use something like the following in the site.conf:
         
 ```    
 
-**The `mcastgroup` is the one of the server(s)!**
 
 And you should include the package in the site.mk of course!
