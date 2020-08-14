@@ -79,7 +79,7 @@ if [ "$(uci get wireguard.wireguard.enabled)" == "true" ] || [ "$(uci get wiregu
                 wg set $INTERFACE private-key /tmp/wgpriv
                 sleep 5
 
-                wg set $INTERFACE peer $(uci get wireguard.peer_$PEER.publickey) persistent-keepalive 25 allowed-ips fe80::/10,$(uci get wireguard.wireguard.mcastgroup)/128 endpoint $(uci get wireguard.peer_$PEER.endpoint)
+                wg set $INTERFACE peer $(uci get wireguard.peer_$PEER.publickey) persistent-keepalive 25 allowed-ips $(uci get uci get wireguard.peer_$PEER.link_address)/128 endpoint $(uci get wireguard.peer_$PEER.endpoint)
                 ip link set up dev $INTERFACE
                 ip address add "$(interface_linklocal "$INTERFACE")"/64 dev $INTERFACE
 
