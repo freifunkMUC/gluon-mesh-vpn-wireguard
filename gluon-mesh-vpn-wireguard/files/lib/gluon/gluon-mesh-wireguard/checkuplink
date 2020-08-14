@@ -62,7 +62,7 @@ if [ "$(uci get wireguard.wireguard.enabled)" == "true" ] || [ "$(uci get wiregu
 		sleep 1
 		modprobe wireguard                                                       
 
-                NUMBER_OF_PEERS=$(uci show wireguard | egrep -e peer_[0-9].endpoint | wc -l)
+                NUMBER_OF_PEERS=$(uci show wireguard | egrep -ce peer_[0-9].endpoint)
                 PEER=$(awk 'BEGIN{srand();print int(rand()*($NUMBER_OF_PEERS)+1) }')
                                                                                                  
 		#Die alten peers loeschen
@@ -88,8 +88,5 @@ if [ "$(uci get wireguard.wireguard.enabled)" == "true" ] || [ "$(uci get wiregu
                 ip link set up dev vx_mesh_vpn
                 sleep 5
                 batctl if add vx_mesh_vpn
-                ip6tables -A INPUT -i $INTERFACE -j ACCEPT
-                ip6tables -A FORWARD -i $INTERFACE -j ACCEPT
-
         fi
 fi
