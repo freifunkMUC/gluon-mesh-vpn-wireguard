@@ -59,20 +59,15 @@ if [ "$(uci get wireguard.wireguard.enabled)" == "true" ] || [ "$(uci get wiregu
         fi
 	
         # Wenn die Tests fehlgeschlagen sind, neu connecten
-        if [ $CONNECTED == 0 ]; then
-		# Falls ein Fehler bei Wireguard war, Module entladen und neuladen
-		rmmod wireguard
-		sleep 1
-		modprobe wireguard                                                       
+        if [ $CONNECTED == 0 ]; then                                    
 
                 NUMBER_OF_PEERS=$(uci show wireguard | egrep -ce peer_[0-9].endpoint)
                 PEER=$(awk 'BEGIN{srand();print int(rand()*($NUMBER_OF_PEERS)+1) }')
-                                                                                                 
-		#Die alten peers loeschen
-		wg set $INTERFACE peer  $(wg |  awk 'BEGIN {RS=""} /endpoint/ {print $2}') remove
-                batctl if del vx_mesh_vpn
+
+                # Delete Interfaces
+                ip link set nomaster bat0 dev vx_mesh_vpn
                 ip link delete dev vx_mesh_vpn
-                ip link delete dev $INTERFACE
+                ip link del $INTERFACE
                 PUBLICKEY=$(uci get wireguard.wireguard.privatekey | wg pubkey)
                 echo $(uci get wireguard.wireguard.privatekey) > /tmp/wgpriv
 
@@ -80,16 +75,14 @@ if [ "$(uci get wireguard.wireguard.enabled)" == "true" ] || [ "$(uci get wiregu
                 #curl -s -k --data-urlencode "pubkey=$PUBLICKEY" https://$URL/wireguard.php
 		ip link add dev $INTERFACE type wireguard
                 wg set $INTERFACE private-key /tmp/wgpriv
-                sleep 5
-
-                gluon-wan wg set $INTERFACE peer $(uci get wireguard.peer_$PEER.publickey) persistent-keepalive 25 allowed-ips $(uci get uci get wireguard.peer_$PEER.link_address)/128 endpoint $(uci get wireguard.peer_$PEER.endpoint)
                 ip link set up dev $INTERFACE
-                ip address add "$(interface_linklocal "$INTERFACE")"/64 dev $INTERFACE
 
-                sleep 5
+                ip address add "$(interface_linklocal "$INTERFACE")"/64 dev $INTERFACE
+                gluon-wan wg set $INTERFACE peer $(uci get wireguard.peer_$PEER.publickey) persistent-keepalive 25 allowed-ips $(uci get uci get wireguard.peer_$PEER.link_address)/128 endpoint $(uci get wireguard.peer_$PEER.endpoint)
+
                 ip link add vx_mesh_vpn type vxlan id "$(lua -e 'print(tonumber(require("gluon.util").domain_seed_bytes("gluon-mesh-vxlan", 3), 16))')" remote $(uci get uci get wireguard.peer_$PEER.link_address) dstport 4789 dev $INTERFACE
                 ip link set up dev vx_mesh_vpn
-                sleep 5
-                batctl if add vx_mesh_vpn
+
+                ip link set master bat0 dev vx_mesh_vpn
         fi
 fi
