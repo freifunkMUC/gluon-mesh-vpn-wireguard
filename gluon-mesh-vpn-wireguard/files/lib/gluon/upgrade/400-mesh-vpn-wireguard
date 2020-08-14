@@ -19,6 +19,7 @@ uci set wireguard.wireguard.enabled=$(jsonfilter -i $datei -e "$.mesh_vpn.wiregu
 uci set wireguard.wireguard.iface=$(jsonfilter -i $datei  -e "$.mesh_vpn.wireguard.iface")   
 uci set wireguard.wireguard.limit=$(jsonfilter -i $datei -e "$.mesh_vpn.wireguard.limit")     
 uci set wireguard.wireguard.mcastgroup=$(jsonfilter -i $datei  -e "$.mesh_vpn.wireguard.mcastgroup")
+
                                                                                                 
 #Wieviele peers haben wir denn?                                                                 
 anzahl=$(jsonfilter -i $datei  -e "$.mesh_vpn.wireguard.peers.*" | wc -l)                       
@@ -30,6 +31,7 @@ do
         uci set wireguard.peer_$(expr $i + 1)=peer
         uci set wireguard.peer_$(expr $i + 1).endpoint=$(jsonfilter -i $datei  -e "$.mesh_vpn.wireguard.peers[$i].endpoint")
         uci set wireguard.peer_$(expr $i + 1).publickey=$(jsonfilter -i $datei  -e "$.mesh_vpn.wireguard.peers[$i].publickey")
+        uci set wireguard.peer_$(expr $i + 1).publickey=$(jsonfilter -i $datei  -e "$.mesh_vpn.wireguard.peers[$i].link_address")
         i=`expr $i + 1`                                                                                                       
 done                                                                                                                          
                                                                                                                               

@@ -84,7 +84,7 @@ if [ "$(uci get wireguard.wireguard.enabled)" == "true" ] || [ "$(uci get wiregu
                 ip address add "$(interface_linklocal "$INTERFACE")"/64 dev $INTERFACE
 
                 sleep 5
-                ip link add vxlan-wan type vxlan id "$(lua -e 'print(tonumber(require("gluon.util").domain_seed_bytes("gluon-mesh-vxlan", 3), 16))')" group $(uci get wireguard.wireguard.mcastgroup) dstport 4789 dev $INTERFACE
+                ip link add vxlan-wan type vxlan id "$(lua -e 'print(tonumber(require("gluon.util").domain_seed_bytes("gluon-mesh-vxlan", 3), 16))')" remote $(uci get uci get wireguard.peer_$PEER.link_address) dstport 4789 dev $INTERFACE
                 ip link set up dev vxlan-wan
                 sleep 5
                 batctl if add vxlan-wan
