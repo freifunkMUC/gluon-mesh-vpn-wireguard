@@ -48,7 +48,7 @@ if [ "$(uci get wireguard.wireguard.enabled)" == "true" ] || [ "$(uci get wiregu
 
         # Und funktioniert das Wireguardinterface? Kann ich den Server erreichen?
         if [ $CONNECTED != 0 ]; then
-                ping -c1 -w2  $(uci get wireguard.wireguard.mcastgroup)%$INTERFACE
+                ping -c1 -w2  $(wg  | grep fe80 | cut -d'/' -f1 | awk '{print $3}')%$INTERFACE
                 if [ $? != 0 ]; then
                         CONNECTED=0
                 fi

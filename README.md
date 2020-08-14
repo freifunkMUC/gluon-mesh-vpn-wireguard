@@ -7,7 +7,7 @@ You should use something like the following in the site.conf:
         
 ```
  mesh_vpn = {
-        mtu = 1410,
+        mtu = 1400,
         wireguard = {
                 enabled = 'true',
                 iface = 'mesh-vpn',
